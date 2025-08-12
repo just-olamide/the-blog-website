@@ -7,15 +7,15 @@ export default {
   components: {
     RouterLink,
     RouterView,
-    Navbar
-  }
+    Navbar,
+  },
 }
 </script>
 
 <template>
   <div class="app">
     <Navbar />
-    <main class="container">
+    <main>
       <RouterView />
     </main>
     <footer class="footer">
