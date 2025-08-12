@@ -7,15 +7,15 @@ export default {
   components: {
     RouterLink,
     RouterView,
-    Navbar
-  }
+    Navbar,
+  },
 }
 </script>
 
 <template>
   <div class="app">
     <Navbar />
-    <main class="container">
+    <main>
       <RouterView />
     </main>
     <footer class="footer">
@@ -27,6 +27,33 @@ export default {
 </template>
 
 <style scoped>
+.app {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.footer {
+  width: 100%;
+  margin: 0;
+  padding: 1rem 0;
+  background-color: #f8f9fa;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Remove old header styles that are no longer needed */
 header {
   line-height: 1.5;
   max-height: 100vh;
