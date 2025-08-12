@@ -10,10 +10,10 @@ export default {
         username: '',
         email: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
       },
       error: null,
-      loading: false
+      loading: false,
     }
   },
   methods: {
@@ -29,14 +29,14 @@ export default {
 
       try {
         await authStore.register(this.form)
-        this.$router.push('/dashboard')
+        this.$router.push('/login')
       } catch (err) {
         this.error = err.response?.data?.message || 'An error occurred during registration'
       } finally {
         this.loading = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -45,7 +45,7 @@ export default {
     <div class="card">
       <div class="card-body">
         <h2 class="text-center mb-4">Register</h2>
-        
+
         <div v-if="error" class="alert alert-danger">
           {{ error }}
         </div>
@@ -53,13 +53,7 @@ export default {
         <form @submit.prevent="handleSubmit">
           <div class="mb-3">
             <label for="name" class="form-label">Full Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="name"
-              v-model="form.name"
-              required
-            >
+            <input type="text" class="form-control" id="name" v-model="form.name" required />
           </div>
 
           <div class="mb-3">
@@ -70,18 +64,12 @@ export default {
               id="username"
               v-model="form.username"
               required
-            >
+            />
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="form.email"
-              required
-            >
+            <input type="email" class="form-control" id="email" v-model="form.email" required />
           </div>
 
           <div class="mb-3">
@@ -92,7 +80,7 @@ export default {
               id="password"
               v-model="form.password"
               required
-            >
+            />
           </div>
 
           <div class="mb-3">
@@ -103,14 +91,10 @@ export default {
               id="password_confirmation"
               v-model="form.password_confirmation"
               required
-            >
+            />
           </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary w-100"
-            :disabled="loading"
-          >
+          <button type="submit" class="btn btn-primary w-100" :disabled="loading">
             {{ loading ? 'Creating account...' : 'Register' }}
           </button>
         </form>

@@ -5,13 +5,13 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: localStorage.getItem('token'),
-    isAuthenticated: false
+    isAuthenticated: false,
   }),
 
   getters: {
     getUser: (state) => state.user,
     getToken: (state) => state.token,
-    isLoggedIn: (state) => state.isAuthenticated
+    isLoggedIn: (state) => state.isAuthenticated,
   },
 
   actions: {
@@ -19,14 +19,14 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await axios.post('/login', credentials)
         const { user, token } = response.data
-        
+
         this.user = user
         this.token = token
         this.isAuthenticated = true
-        
+
         localStorage.setItem('token', token)
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        
+
         return Promise.resolve(response)
       } catch (error) {
         return Promise.reject(error)
@@ -37,14 +37,14 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await axios.post('/register', userData)
         const { user, token } = response.data
-        
+
         this.user = user
         this.token = token
         this.isAuthenticated = true
-        
+
         localStorage.setItem('token', token)
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        
+
         return Promise.resolve(response)
       } catch (error) {
         return Promise.reject(error)
@@ -54,14 +54,14 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         await axios.post('/logout')
-        
+
         this.user = null
         this.token = null
         this.isAuthenticated = false
-        
+
         localStorage.removeItem('token')
         delete axios.defaults.headers.common['Authorization']
-        
+
         return Promise.resolve()
       } catch (error) {
         return Promise.reject(error)
@@ -77,6 +77,6 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         return Promise.reject(error)
       }
-    }
-  }
+    },
+  },
 })
