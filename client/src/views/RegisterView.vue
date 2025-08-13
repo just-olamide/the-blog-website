@@ -1,41 +1,37 @@
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-export default {
-  name: 'RegisterView',
-  data() {
-    return {
-      form: {
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        password_confirmation: ''
-      },
-      error: null,
-      loading: false
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      if (this.form.password !== this.form.password_confirmation) {
-        this.error = 'Passwords do not match'
-        return
-      }
+const router = useRouter()
+const authStore = useAuthStore()
 
-      this.loading = true
-      this.error = null
-      const authStore = useAuthStore()
+const form = ref({
+  name: '',
+  username: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+})
+const error = ref(null)
+const loading = ref(false)
 
-      try {
-        await authStore.register(this.form)
-        this.$router.push('/dashboard')
-      } catch (err) {
-        this.error = err.response?.data?.message || 'An error occurred during registration'
-      } finally {
-        this.loading = false
-      }
-    }
+const handleSubmit = async () => {
+  if (form.value.password !== form.value.password_confirmation) {
+    error.value = 'Passwords do not match'
+    return
+  }
+
+  loading.value = true
+  error.value = null
+
+  try {
+    await authStore.register(form.value)
+    await router.push('/dashboard')
+  } catch (err) {
+    error.value = err.response?.data?.message || 'An error occurred during registration'
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -45,7 +41,7 @@ export default {
     <div class="card">
       <div class="card-body">
         <h2 class="text-center mb-4">Register</h2>
-        
+
         <div v-if="error" class="alert alert-danger">
           {{ error }}
         </div>
@@ -53,13 +49,7 @@ export default {
         <form @submit.prevent="handleSubmit">
           <div class="mb-3">
             <label for="name" class="form-label">Full Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="name"
-              v-model="form.name"
-              required
-            >
+            <input type="text" class="form-control" id="name" v-model="form.name" required />
           </div>
 
           <div class="mb-3">
@@ -70,18 +60,12 @@ export default {
               id="username"
               v-model="form.username"
               required
-            >
+            />
           </div>
 
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="form.email"
-              required
-            >
+            <input type="email" class="form-control" id="email" v-model="form.email" required />
           </div>
 
           <div class="mb-3">
@@ -92,7 +76,7 @@ export default {
               id="password"
               v-model="form.password"
               required
-            >
+            />
           </div>
 
           <div class="mb-3">
@@ -103,14 +87,10 @@ export default {
               id="password_confirmation"
               v-model="form.password_confirmation"
               required
-            >
+            />
           </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary w-100"
-            :disabled="loading"
-          >
+          <button type="submit" class="btn btn-primary w-100" :disabled="loading">
             {{ loading ? 'Creating account...' : 'Register' }}
           </button>
         </form>

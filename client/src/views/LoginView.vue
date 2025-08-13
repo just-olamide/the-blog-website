@@ -1,33 +1,29 @@
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-export default {
-  name: 'LoginView',
-  data() {
-    return {
-      form: {
-        email: '',
-        password: ''
-      },
-      error: null,
-      loading: false
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      this.loading = true
-      this.error = null
-      const authStore = useAuthStore()
+const router = useRouter()
+const authStore = useAuthStore()
 
-      try {
-        await authStore.login(this.form)
-        this.$router.push('/dashboard')
-      } catch (err) {
-        this.error = err.response?.data?.message || 'An error occurred during login'
-      } finally {
-        this.loading = false
-      }
-    }
+const form = ref({
+  email: '',
+  password: '',
+})
+const error = ref(null)
+const loading = ref(false)
+
+const handleSubmit = async () => {
+  loading.value = true
+  error.value = null
+
+  try {
+    await authStore.login(form.value)
+    await router.push('/dashboard')
+  } catch (err) {
+    error.value = err.response?.data?.message || 'An error occurred during login'
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -37,7 +33,7 @@ export default {
     <div class="card">
       <div class="card-body">
         <h2 class="text-center mb-4">Login</h2>
-        
+
         <div v-if="error" class="alert alert-danger">
           {{ error }}
         </div>
@@ -45,13 +41,7 @@ export default {
         <form @submit.prevent="handleSubmit">
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="form.email"
-              required
-            >
+            <input type="email" class="form-control" id="email" v-model="form.email" required />
           </div>
 
           <div class="mb-3">
@@ -62,14 +52,10 @@ export default {
               id="password"
               v-model="form.password"
               required
-            >
+            />
           </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary w-100"
-            :disabled="loading"
-          >
+          <button type="submit" class="btn btn-primary w-100" :disabled="loading">
             {{ loading ? 'Logging in...' : 'Login' }}
           </button>
         </form>

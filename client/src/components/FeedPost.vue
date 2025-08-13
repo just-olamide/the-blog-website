@@ -29,13 +29,13 @@ export default {
   },
   methods: {
     handleLike() {
-      this.$emit('like', this.post.id)
+      this.$emit('like', this.post.slug)
     },
     handleComment() {
       this.$emit('comment', this.post.id)
     },
     handleShare() {
-      this.$emit('share', this.post.id)
+      this.$emit('share', this.post.slug)
     },
     handleReadMore() {
       // Navigate to post detail page
@@ -101,8 +101,8 @@ export default {
     <div class="post-actions">
       <button class="action-btn like-btn" @click="handleLike">
         <svg
-          width="20"
-          height="20"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -110,32 +110,32 @@ export default {
           <path
             d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.5487 7.04097 1.5487 8.5C1.5487 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7564 11.2728 22.0329 10.6054C22.3095 9.93789 22.4518 9.22249 22.4518 8.5C22.4518 7.77751 22.3095 7.0621 22.0329 6.39464C21.7564 5.72718 21.351 5.12075 20.84 4.61Z"
             :fill="post.is_liked ? '#ef4444' : 'none'"
-            :stroke="post.is_liked ? '#ef4444' : 'currentColor'"
+            :stroke="post.is_liked ? '#ef4444' : '#6b7280'"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-        <span class="action-text">{{ post.likes_count || 0 }}</span>
+        <span class="action-text">{{ post.likes_count || 0 }} likes</span>
       </button>
 
       <button class="action-btn comment-btn" @click="handleComment">
         <svg
-          width="20"
-          height="20"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
-            stroke="currentColor"
+            stroke="#6b7280"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-        <span class="action-text">{{ post.comments_count || 0 }}</span>
+        <span class="action-text">{{ post.comments_count || 0 }} comments</span>
       </button>
 
       <button class="action-btn share-btn" @click="handleShare">
@@ -359,7 +359,7 @@ export default {
 .post-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
   padding-top: 1rem;
   border-top: 1px solid #f1f5f9;
 }
@@ -367,20 +367,21 @@ export default {
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 6px;
   background: none;
   border: none;
-  color: #64748b;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
+  color: #6b7280;
+  padding: 4px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .action-btn:hover {
-  background-color: #f8fafc;
-  color: #334155;
+  background: transparent;
+  color: #374151;
 }
 
 .like-btn:hover {

@@ -34,6 +34,7 @@ export default {
       showConfirmModal: false,
       showSuccessToast: false,
       toastMessage: '',
+      redirectTimer: null,
     }
   },
   computed: {
@@ -94,7 +95,7 @@ export default {
           }
         })
 
-        const endpoint = this.isEdit ? `/posts/${this.post.id}` : '/posts'
+        const endpoint = this.isEdit ? `/posts/${this.post.slug}` : '/posts'
         const method = this.isEdit ? 'put' : 'post'
 
         const response = await axios({
@@ -113,7 +114,7 @@ export default {
         this.showSuccessToast = true
 
         // Wait a moment for the toast to show, then redirect
-        setTimeout(() => {
+        this.redirectTimer = setTimeout(() => {
           if (this.isEdit) {
             this.$router.push('/dashboard')
           } else {
@@ -146,6 +147,12 @@ export default {
       }
     }
     this.fetchCategories()
+  },
+  beforeUnmount() {
+    if (this.redirectTimer) {
+      clearTimeout(this.redirectTimer)
+      this.redirectTimer = null
+    }
   },
 }
 </script>

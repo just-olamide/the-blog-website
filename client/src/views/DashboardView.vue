@@ -85,7 +85,7 @@ export default {
       if (!confirm('Are you sure you want to delete this post?')) return
 
       try {
-        await axios.delete(`/posts/${post.id}`)
+        await axios.delete(`/posts/${post.slug}`)
         this.posts = this.posts.filter((p) => p.id !== post.id)
         this.calculateStats()
       } catch (error) {
@@ -253,7 +253,7 @@ export default {
                   <td>
                     <div class="btn-group">
                       <RouterLink
-                        :to="{ name: 'edit-post', params: { id: post.id } }"
+                        :to="{ name: 'edit-post', params: { slug: post.slug } }"
                         class="btn btn-sm btn-outline-primary"
                       >
                         <i class="bi bi-pencil"></i>

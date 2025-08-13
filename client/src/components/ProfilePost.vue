@@ -39,11 +39,11 @@ export default {
     },
     handleView() {
       // Navigate to post view page
-      this.$router.push(`/posts/${this.post.slug || this.post.id}`)
+      this.$router.push(`/blog/${this.post.slug || this.post.id}`)
     },
     handleEdit() {
       // Navigate to post edit page
-      this.$router.push(`/edit-post/${this.post.id}`)
+      this.$router.push(`/posts/${this.post.slug}/edit`)
     },
   },
 }

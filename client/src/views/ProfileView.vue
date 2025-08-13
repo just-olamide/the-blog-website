@@ -207,8 +207,8 @@
                 :class="{ active: post.is_liked }"
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -216,31 +216,31 @@
                   <path
                     d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.5487 7.04097 1.5487 8.5C1.5487 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.39467C21.7563 5.72723 21.351 5.1208 20.84 4.61V4.61Z"
                     :fill="post.is_liked ? '#ef4444' : 'none'"
-                    :stroke="post.is_liked ? '#ef4444' : 'currentColor'"
+                    :stroke="post.is_liked ? '#ef4444' : '#6b7280'"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-                <span>{{ post.likes_count || 0 }}</span>
+                <span>{{ post.likes_count || 0 }} likes</span>
               </button>
               <button class="stat-item comment-btn" @click="toggleComments(post)">
                 <svg
-                  width="20"
-                  height="20"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
-                    stroke="currentColor"
+                    stroke="#6b7280"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-                <span>{{ post.comments_count || 0 }}</span>
+                <span>{{ post.comments_count || 0 }} comments</span>
               </button>
             </div>
 
@@ -566,7 +566,7 @@ export default {
     }
 
     const editPost = (post) => {
-      window.location.href = `/posts/${post.id}/edit`
+      window.location.href = `/posts/${post.slug}/edit`
     }
 
     return {
@@ -935,7 +935,7 @@ export default {
 
 .post-stats {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   padding: 16px 20px;
   border-top: 1px solid #f1f5f9;
 }
@@ -943,25 +943,29 @@ export default {
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: none;
   border: none;
-  color: #64748b;
+  color: #6b7280;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 4px;
+  border-radius: 4px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   transition: all 0.2s ease;
 }
 
 .stat-item:hover {
-  background: #f8fafc;
-  color: #3b82f6;
+  background: transparent;
+  color: #374151;
 }
 
 .stat-item.active {
   color: #ef4444;
+}
+
+.stat-item.active svg path {
+  stroke: #ef4444;
 }
 
 .comments-section {

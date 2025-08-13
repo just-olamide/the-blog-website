@@ -1,31 +1,30 @@
-<script>
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { mapState } from 'pinia'
 
-export default {
-  name: 'Navbar',
-  data() {
-    return {
-      isMenuOpen: false,
-    }
-  },
-  computed: {
-    ...mapState(useAuthStore, ['user', 'isAuthenticated']),
-  },
-  methods: {
-    async logout() {
-      const authStore = useAuthStore()
-      try {
-        await authStore.logout()
-        this.$router.push('/login')
-      } catch (error) {
-        console.error('Logout error:', error)
-      }
-    },
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen
-    },
-  },
+const router = useRouter()
+const authStore = useAuthStore()
+
+// Reactive data
+const isMenuOpen = ref(false)
+
+// Computed
+const user = computed(() => authStore.user)
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// Methods
+const logout = async () => {
+  try {
+    await authStore.logout()
+    await router.push('/login')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
+}
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
 }
 </script>
 
