@@ -1,74 +1,87 @@
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import FeedPost from '@/components/FeedPost.vue'
 import axios from '@/plugins/axios'
 
-export default {
-  name: 'FeedsView',
-  components: { FeedPost },
-  data() {
-    return {
-      searchQuery: '',
-      sortBy: 'latest',
-      loading: true,
-      posts: [],
-      error: null,
-    }
-  },
-  computed: {
-    authStore() {
-      return useAuthStore()
-    },
-  },
-  methods: {
-    handleSearch() {
-      // Implement search functionality
-      console.log('Searching for:', this.searchQuery)
-    },
-    handleSortChange() {
-      // Implement sort functionality
-      console.log('Sorting by:', this.sortBy)
-    },
-    handleFilter() {
-      // Implement filter functionality
-      console.log('Opening filter options')
-    },
-    async fetchFeed() {
-      try {
-        this.loading = true
-        const params = { public: true, search: this.searchQuery }
-        const { data } = await axios.get('/posts', { params })
-        this.posts = data.data || data
-      } catch (e) {
-        this.error = 'Failed to load feed'
-        console.error(e)
-      } finally {
-        this.loading = false
-      }
-    },
-    onLike(postId) {
-      this.posts = this.posts.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              is_liked: !p.is_liked,
-              likes_count: (p.likes_count || 0) + (p.is_liked ? -1 : 1),
-            }
-          : p,
-      )
-    },
-    onComment(postId) {
-      console.log('Open comments for post', postId)
-    },
-    onShare(postId) {
-      console.log('Share post', postId)
-      navigator?.clipboard?.writeText?.(window.location.origin + '/posts/' + postId).catch(() => {})
-    },
-  },
-  created() {
-    this.fetchFeed()
-  },
+const authStore = useAuthStore()
+
+// Reactive data
+const searchQuery = ref('')
+const sortBy = ref('latest')
+const loading = ref(true)
+const posts = ref([])
+const error = ref(null)
+
+// Methods
+const handleSearch = () => {
+  console.log('Searching for:', searchQuery.value)
 }
+
+const handleSortChange = () => {
+  console.log('Sorting by:', sortBy.value)
+}
+
+const handleFilter = () => {
+  console.log('Opening filter options')
+}
+
+const fetchFeed = async () => {
+  try {
+    loading.value = true
+    const params = { public: true, search: searchQuery.value }
+    const { data } = await axios.get('/posts', { params })
+    posts.value = data.data || data
+  } catch (e) {
+    error.value = 'Failed to load feed'
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+const onLike = async (postSlug) => {
+  try {
+    const post = posts.value.find((p) => p.slug === postSlug)
+    if (!post) return
+
+    const endpoint = post.is_liked ? 'unlike' : 'like'
+    const response = await axios.post(`/posts/${postSlug}/${endpoint}`)
+
+    // Update the post in the local state
+    posts.value = posts.value.map((p) =>
+      p.slug === postSlug
+        ? {
+            ...p,
+            is_liked: response.data.is_liked,
+            likes_count: response.data.likes,
+          }
+        : p,
+    )
+  } catch (err) {
+    console.error('Error handling like:', err)
+
+    // If we get a 400 error, refresh the feed to get correct states
+    if (err.response && err.response.status === 400) {
+      console.log('Like states out of sync, refreshing feed...')
+      await fetchFeed()
+    }
+  }
+}
+
+const onComment = (postId) => {
+  console.log('Open comments for post', postId)
+}
+
+const onShare = (postSlug) => {
+  console.log('Share post', postSlug)
+  navigator?.clipboard?.writeText?.(window.location.origin + '/blog/' + postSlug).catch(() => {})
+}
+
+// Lifecycle
+onMounted(() => {
+  fetchFeed()
+})
 </script>
 
 <template>

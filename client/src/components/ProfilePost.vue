@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'FeedPost',
+  name: 'ProfilePost',
   props: {
     post: {
       type: Object,
@@ -29,24 +29,28 @@ export default {
   },
   methods: {
     handleLike() {
-      this.$emit('like', this.post.slug)
+      this.$emit('like', this.post.id)
     },
     handleComment() {
       this.$emit('comment', this.post.id)
     },
     handleShare() {
-      this.$emit('share', this.post.slug)
+      this.$emit('share', this.post.id)
     },
-    handleReadMore() {
-      // Navigate to post detail page
+    handleView() {
+      // Navigate to post view page
       this.$router.push(`/blog/${this.post.slug || this.post.id}`)
+    },
+    handleEdit() {
+      // Navigate to post edit page
+      this.$router.push(`/posts/${this.post.slug}/edit`)
     },
   },
 }
 </script>
 
 <template>
-  <div class="feed-post">
+  <div class="profile-post">
     <!-- Post Header -->
     <div class="post-header">
       <div class="author-info">
@@ -101,8 +105,8 @@ export default {
     <div class="post-actions">
       <button class="action-btn like-btn" @click="handleLike">
         <svg
-          width="16"
-          height="16"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -110,32 +114,32 @@ export default {
           <path
             d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.5487 7.04097 1.5487 8.5C1.5487 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7564 11.2728 22.0329 10.6054C22.3095 9.93789 22.4518 9.22249 22.4518 8.5C22.4518 7.77751 22.3095 7.0621 22.0329 6.39464C21.7564 5.72718 21.351 5.12075 20.84 4.61Z"
             :fill="post.is_liked ? '#ef4444' : 'none'"
-            :stroke="post.is_liked ? '#ef4444' : '#6b7280'"
+            :stroke="post.is_liked ? '#ef4444' : 'currentColor'"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-        <span class="action-text">{{ post.likes_count || 0 }} likes</span>
+        <span class="action-text">{{ post.likes_count || 0 }}</span>
       </button>
 
       <button class="action-btn comment-btn" @click="handleComment">
         <svg
-          width="16"
-          height="16"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
-            stroke="#6b7280"
+            stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-        <span class="action-text">{{ post.comments_count || 0 }} comments</span>
+        <span class="action-text">{{ post.comments_count || 0 }}</span>
       </button>
 
       <button class="action-btn share-btn" @click="handleShare">
@@ -171,9 +175,9 @@ export default {
         <span class="action-text">Share</span>
       </button>
 
-      <!-- Read More Button for Feed Posts -->
-      <div class="read-more-section">
-        <button class="read-more-btn" @click="handleReadMore">
+      <!-- Profile-specific action buttons -->
+      <div class="profile-actions">
+        <button class="action-btn view-btn" @click="handleView">
           <svg
             width="20"
             height="20"
@@ -198,7 +202,33 @@ export default {
               stroke-linejoin="round"
             />
           </svg>
-          <span class="action-text">Read More</span>
+          <span class="action-text">View</span>
+        </button>
+
+        <button class="action-btn edit-btn" @click="handleEdit">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 20h9"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="action-text">Edit</span>
         </button>
       </div>
     </div>
@@ -206,7 +236,7 @@ export default {
 </template>
 
 <style scoped>
-.feed-post {
+.profile-post {
   background: white;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -216,7 +246,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.feed-post:hover {
+.profile-post:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
@@ -359,29 +389,32 @@ export default {
 .post-actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: space-between;
   padding-top: 1rem;
   border-top: 1px solid #f1f5f9;
+}
+
+.post-actions > .action-btn {
+  margin-right: 1rem;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
   background: none;
   border: none;
-  color: #6b7280;
-  padding: 4px;
-  border-radius: 4px;
+  color: #64748b;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
-  font-weight: 400;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .action-btn:hover {
-  background: transparent;
-  color: #374151;
+  background-color: #f8fafc;
+  color: #334155;
 }
 
 .like-btn:hover {
@@ -396,30 +429,31 @@ export default {
   color: #10b981;
 }
 
-.read-more-section {
+.profile-actions {
   display: flex;
-  align-items: center;
-}
-
-.read-more-btn {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #8b5cf6 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
 }
 
-.read-more-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+.view-btn {
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border: 1px solid #7dd3fc;
+}
+
+.view-btn:hover {
+  background-color: #0284c7;
+  color: white;
+}
+
+.edit-btn {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.edit-btn:hover {
+  background-color: #374151;
+  color: white;
 }
 
 .action-text {
@@ -428,7 +462,7 @@ export default {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .feed-post {
+  .profile-post {
     padding: 1rem;
     margin-bottom: 1rem;
   }
@@ -456,20 +490,14 @@ export default {
     margin-right: 0;
   }
 
-  .read-more-section {
-    justify-content: center;
-    margin-top: 0.5rem;
+  .profile-actions {
+    justify-content: space-between;
   }
 
   .action-btn {
     padding: 0.5rem;
     font-size: 0.8rem;
     justify-content: center;
-  }
-
-  .read-more-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
   }
 }
 </style>

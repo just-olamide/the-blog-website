@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Models\Post;
+use App\Models\Comment;
 
 class UserController extends Controller
 {
@@ -56,5 +58,52 @@ class UserController extends Controller
         ]);
 
         return response()->json(['message' => 'Password updated successfully']);
+    }
+
+    public function stats(Request $request)
+    {
+        $user = $request->user();
+
+        $postsCount = Post::where('user_id', $user->id)->count();
+        $totalLikes = Post::where('user_id', $user->id)->sum('like_count');
+        $totalComments = Comment::whereHas('post', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->count();
+
+        return response()->json([
+            'posts' => $postsCount,
+            'likes' => $totalLikes,
+            'comments' => $totalComments,
+        ]);
+    }
+
+    public function posts(Request $request)
+    {
+        $user = $request->user();
+
+        $posts = Post::with(['category', 'user'])
+            ->withCount('comments')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Get liked post IDs for this user
+        $likedPostIds = $user->likes()->pluck('post_id')->toArray();
+
+        // Transform the data to match frontend expectations
+        $posts->getCollection()->transform(function ($post) use ($user, $likedPostIds) {
+            $post->comments_count = $post->comments_count;
+            $post->likes_count = $post->like_count;
+            $post->is_liked = in_array($post->id, $likedPostIds);
+            
+            // Format featured image URL
+            if ($post->featured_image) {
+                $post->featured_image = url('storage/' . $post->featured_image);
+            }
+            
+            return $post;
+        });
+
+        return response()->json($posts);
     }
 }
