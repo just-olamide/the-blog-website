@@ -40,4 +40,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [UserController::class, 'show']);
     Route::put('/profile', [UserController::class, 'update']);
     Route::get('/profile/stats', [UserController::class, 'stats']);
+    Route::get('/profile/posts', [UserController::class, 'posts']);
 });

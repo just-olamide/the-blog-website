@@ -76,4 +76,31 @@ class UserController extends Controller
             'comments' => $totalComments,
         ]);
     }
+
+    public function posts(Request $request)
+    {
+        $user = $request->user();
+
+        $posts = Post::with(['category', 'user'])
+            ->withCount('comments')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // Transform the data to match frontend expectations
+        $posts->getCollection()->transform(function ($post) use ($user) {
+            $post->comments_count = $post->comments_count;
+            $post->likes_count = $post->like_count;
+            $post->is_liked = false; // You can implement like tracking if needed
+            
+            // Format featured image URL
+            if ($post->featured_image) {
+                $post->featured_image = url('storage/' . $post->featured_image);
+            }
+            
+            return $post;
+        });
+
+        return response()->json($posts);
+    }
 }

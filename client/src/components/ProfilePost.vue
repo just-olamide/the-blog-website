@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'FeedPost',
+  name: 'ProfilePost',
   props: {
     post: {
       type: Object,
@@ -37,16 +37,20 @@ export default {
     handleShare() {
       this.$emit('share', this.post.id)
     },
-    handleReadMore() {
-      // Navigate to post detail page
+    handleView() {
+      // Navigate to post view page
       this.$router.push(`/posts/${this.post.slug || this.post.id}`)
+    },
+    handleEdit() {
+      // Navigate to post edit page
+      this.$router.push(`/edit-post/${this.post.id}`)
     },
   },
 }
 </script>
 
 <template>
-  <div class="feed-post">
+  <div class="profile-post">
     <!-- Post Header -->
     <div class="post-header">
       <div class="author-info">
@@ -171,9 +175,9 @@ export default {
         <span class="action-text">Share</span>
       </button>
 
-      <!-- Read More Button for Feed Posts -->
-      <div class="read-more-section">
-        <button class="read-more-btn" @click="handleReadMore">
+      <!-- Profile-specific action buttons -->
+      <div class="profile-actions">
+        <button class="action-btn view-btn" @click="handleView">
           <svg
             width="20"
             height="20"
@@ -184,7 +188,21 @@ export default {
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <span class="action-text">Read More</span>
+          <span class="action-text">View</span>
+        </button>
+
+        <button class="action-btn edit-btn" @click="handleEdit">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="action-text">Edit</span>
         </button>
       </div>
     </div>
@@ -192,7 +210,7 @@ export default {
 </template>
 
 <style scoped>
-.feed-post {
+.profile-post {
   background: white;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -202,7 +220,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.feed-post:hover {
+.profile-post:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
@@ -350,6 +368,10 @@ export default {
   border-top: 1px solid #f1f5f9;
 }
 
+.post-actions > .action-btn {
+  margin-right: 1rem;
+}
+
 .action-btn {
   display: flex;
   align-items: center;
@@ -381,30 +403,31 @@ export default {
   color: #10b981;
 }
 
-.read-more-section {
+.profile-actions {
   display: flex;
-  align-items: center;
-}
-
-.read-more-btn {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #8b5cf6 100%);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
 }
 
-.read-more-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+.view-btn {
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border: 1px solid #7dd3fc;
+}
+
+.view-btn:hover {
+  background-color: #0284c7;
+  color: white;
+}
+
+.edit-btn {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.edit-btn:hover {
+  background-color: #374151;
+  color: white;
 }
 
 .action-text {
@@ -413,7 +436,7 @@ export default {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .feed-post {
+  .profile-post {
     padding: 1rem;
     margin-bottom: 1rem;
   }
@@ -441,20 +464,14 @@ export default {
     margin-right: 0;
   }
 
-  .read-more-section {
-    justify-content: center;
-    margin-top: 0.5rem;
+  .profile-actions {
+    justify-content: space-between;
   }
 
   .action-btn {
     padding: 0.5rem;
     font-size: 0.8rem;
     justify-content: center;
-  }
-
-  .read-more-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
   }
 }
 </style>
