@@ -12,14 +12,9 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with(['user', 'category', 'tags'])
+        $query = Post::with(['user', 'category'])
             ->when($request->category_id, function ($q) use ($request) {
                 return $q->where('category_id', $request->category_id);
-            })
-            ->when($request->tag_id, function ($q) use ($request) {
-                return $q->whereHas('tags', function ($q) use ($request) {
-                    $q->where('id', $request->tag_id);
-                });
             })
             ->when($request->search, function ($q) use ($request) {
                 return $q->where(function ($q) use ($request) {
@@ -43,13 +38,11 @@ class PostController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
-            'tags' => ['array'],
-            'tags.*' => ['exists:tags,id'],
             'featured_image' => ['nullable', 'image', 'max:2048'],
             'status' => ['required', 'in:draft,published'],
         ]);
 
-        $post = new Post($request->except('featured_image', 'tags'));
+        $post = new Post($request->except('featured_image'));
         $post->user_id = $request->user()->id;
         $post->slug = Str::slug($request->title);
 
@@ -60,11 +53,7 @@ class PostController extends Controller
 
         $post->save();
 
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        }
-
-        return response()->json($post->load(['user', 'category', 'tags']), 201);
+        return response()->json($post->load(['user', 'category']), 201);
     }
 
     public function show(Post $post)
@@ -75,7 +64,7 @@ class PostController extends Controller
 
         $post->increment('view_count');
         
-        return response()->json($post->load(['user', 'category', 'tags']));
+        return response()->json($post->load(['user', 'category']));
     }
 
     public function update(Request $request, Post $post)
@@ -88,8 +77,6 @@ class PostController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
-            'tags' => ['array'],
-            'tags.*' => ['exists:tags,id'],
             'featured_image' => ['nullable', 'image', 'max:2048'],
             'status' => ['required', 'in:draft,published'],
         ]);
@@ -102,13 +89,9 @@ class PostController extends Controller
             $post->featured_image = $path;
         }
 
-        $post->update($request->except('featured_image', 'tags'));
+        $post->update($request->except('featured_image'));
 
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->tags);
-        }
-
-        return response()->json($post->load(['user', 'category', 'tags']));
+        return response()->json($post->load(['user', 'category']));
     }
 
     public function destroy(Post $post)

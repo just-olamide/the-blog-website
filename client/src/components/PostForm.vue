@@ -8,8 +8,8 @@ export default {
   props: {
     post: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -17,16 +17,14 @@ export default {
         title: '',
         content: '',
         category_id: '',
-        tags: [],
         featured_image: null,
-        status: 'draft'
+        status: 'draft',
       },
       categories: [],
-      availableTags: [],
       preview: false,
       loading: false,
       error: null,
-      imagePreview: null
+      imagePreview: null,
     }
   },
   computed: {
@@ -38,7 +36,7 @@ export default {
     },
     markdownPreview() {
       return marked(this.form.content)
-    }
+    },
   },
   methods: {
     async fetchCategories() {
@@ -47,14 +45,6 @@ export default {
         this.categories = response.data
       } catch (error) {
         console.error('Error fetching categories:', error)
-      }
-    },
-    async fetchTags() {
-      try {
-        const response = await axios.get('/tags')
-        this.availableTags = response.data
-      } catch (error) {
-        console.error('Error fetching tags:', error)
       }
     },
     handleImageChange(event) {
@@ -76,10 +66,8 @@ export default {
 
       try {
         const formData = new FormData()
-        Object.keys(this.form).forEach(key => {
-          if (key === 'tags') {
-            formData.append(key, JSON.stringify(this.form[key]))
-          } else if (key === 'featured_image' && this.form[key]) {
+        Object.keys(this.form).forEach((key) => {
+          if (key === 'featured_image' && this.form[key]) {
             formData.append(key, this.form[key])
           } else {
             formData.append(key, this.form[key])
@@ -88,14 +76,14 @@ export default {
 
         const endpoint = this.isEdit ? `/posts/${this.post.id}` : '/posts'
         const method = this.isEdit ? 'put' : 'post'
-        
+
         await axios({
           method,
           url: endpoint,
           data: formData,
           headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+            'Content-Type': 'multipart/form-data',
+          },
         })
 
         this.$router.push('/dashboard')
@@ -105,7 +93,7 @@ export default {
       } finally {
         this.loading = false
       }
-    }
+    },
   },
   created() {
     if (this.post) {
@@ -113,17 +101,15 @@ export default {
         title: this.post.title,
         content: this.post.content,
         category_id: this.post.category_id,
-        tags: this.post.tags.map(tag => tag.id),
         status: this.post.status,
-        featured_image: null
+        featured_image: null,
       }
       if (this.post.featured_image) {
         this.imagePreview = `http://localhost:8000/storage/${this.post.featured_image}`
       }
     }
     this.fetchCategories()
-    this.fetchTags()
-  }
+  },
 }
 </script>
 
@@ -144,13 +130,7 @@ export default {
           <!-- Title -->
           <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input
-              type="text"
-              class="form-control"
-              id="title"
-              v-model="form.title"
-              required
-            >
+            <input type="text" class="form-control" id="title" v-model="form.title" required />
           </div>
 
           <!-- Content -->
@@ -173,9 +153,7 @@ export default {
                 rows="10"
                 required
               ></textarea>
-              <small class="text-muted">
-                Supports Markdown formatting
-              </small>
+              <small class="text-muted"> Supports Markdown formatting </small>
             </template>
             <div v-else class="border rounded p-3 bg-light">
               <div v-html="markdownPreview"></div>
@@ -185,42 +163,12 @@ export default {
           <!-- Category -->
           <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <select
-              class="form-select"
-              id="category"
-              v-model="form.category_id"
-              required
-            >
+            <select class="form-select" id="category" v-model="form.category_id" required>
               <option value="">Select a category</option>
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="category.id"
-              >
+              <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>
             </select>
-          </div>
-
-          <!-- Tags -->
-          <div class="mb-3">
-            <label class="form-label">Tags</label>
-            <div class="tags-container">
-              <div class="form-check form-check-inline" 
-                   v-for="tag in availableTags" 
-                   :key="tag.id">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  :id="'tag-' + tag.id"
-                  :value="tag.id"
-                  v-model="form.tags"
-                >
-                <label class="form-check-label" :for="'tag-' + tag.id">
-                  {{ tag.name }}
-                </label>
-              </div>
-            </div>
           </div>
 
           <!-- Featured Image -->
@@ -232,17 +180,15 @@ export default {
               id="featured_image"
               accept="image/*"
               @change="handleImageChange"
-            >
-            <small class="text-muted d-block">
-              Maximum file size: 2MB
-            </small>
+            />
+            <small class="text-muted d-block"> Maximum file size: 2MB </small>
             <div v-if="imagePreview" class="mt-2">
               <img
                 :src="imagePreview"
                 alt="Preview"
                 class="img-thumbnail"
                 style="max-height: 200px"
-              >
+              />
             </div>
           </div>
 
@@ -256,10 +202,8 @@ export default {
                 id="draft"
                 value="draft"
                 v-model="form.status"
-              >
-              <label class="form-check-label" for="draft">
-                Save as Draft
-              </label>
+              />
+              <label class="form-check-label" for="draft"> Save as Draft </label>
             </div>
             <div class="form-check">
               <input
@@ -268,28 +212,17 @@ export default {
                 id="published"
                 value="published"
                 v-model="form.status"
-              >
-              <label class="form-check-label" for="published">
-                Publish Now
-              </label>
+              />
+              <label class="form-check-label" for="published"> Publish Now </label>
             </div>
           </div>
 
           <!-- Submit Button -->
           <div class="d-flex gap-2">
-            <button
-              type="submit"
-              class="btn btn-primary"
-              :disabled="loading"
-            >
-              {{ loading ? 'Saving...' : (isEdit ? 'Update Post' : 'Create Post') }}
+            <button type="submit" class="btn btn-primary" :disabled="loading">
+              {{ loading ? 'Saving...' : isEdit ? 'Update Post' : 'Create Post' }}
             </button>
-            <RouterLink
-              to="/dashboard"
-              class="btn btn-outline-secondary"
-            >
-              Cancel
-            </RouterLink>
+            <RouterLink to="/dashboard" class="btn btn-outline-secondary"> Cancel </RouterLink>
           </div>
         </form>
       </div>
@@ -303,11 +236,5 @@ export default {
   margin: 0 auto;
 }
 
-.tags-container {
-  max-height: 150px;
-  overflow-y: auto;
-  border: 1px solid #dee2e6;
-  border-radius: 0.375rem;
-  padding: 0.5rem;
-}
+/* tags UI removed */
 </style>

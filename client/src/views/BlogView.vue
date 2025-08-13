@@ -12,12 +12,10 @@ export default {
     return {
       posts: [],
       categories: [],
-      tags: [],
       loading: true,
       error: null,
       filters: {
         category: '',
-        tag: '',
         search: ''
       },
       pagination: {
@@ -39,7 +37,6 @@ export default {
         const params = {
           page,
           category_id: this.filters.category,
-          tag_id: this.filters.tag,
           search: this.filters.search,
           public: true
         }
@@ -66,21 +63,13 @@ export default {
         console.error('Error fetching categories:', error)
       }
     },
-    async fetchTags() {
-      try {
-        const response = await axios.get('/tags')
-        this.tags = response.data
-      } catch (error) {
-        console.error('Error fetching tags:', error)
-      }
-    },
+    
     applyFilters() {
       this.fetchPosts(1)
     },
     clearFilters() {
       this.filters = {
         category: '',
-        tag: '',
         search: ''
       }
       this.fetchPosts(1)
@@ -93,7 +82,7 @@ export default {
   created() {
     this.fetchPosts()
     this.fetchCategories()
-    this.fetchTags()
+    
   }
 }
 </script>
@@ -129,23 +118,7 @@ export default {
                     </option>
                   </select>
                 </div>
-                <div class="col-md-4">
-                  <select 
-                    v-model="filters.tag"
-                    class="form-select"
-                    @change="applyFilters"
-                  >
-                    <option value="">All Tags</option>
-                    <option 
-                      v-for="tag in tags"
-                      :key="tag.id"
-                      :value="tag.id"
-                    >
-                      {{ tag.name }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-8">
                   <div class="input-group">
                     <input 
                       type="text"
