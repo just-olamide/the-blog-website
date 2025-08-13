@@ -39,7 +39,7 @@ export default {
     },
     handleReadMore() {
       // Navigate to post detail page
-      this.$router.push(`/posts/${this.post.slug || this.post.id}`)
+      this.$router.push(`/blog/${this.post.slug || this.post.id}`)
     },
   },
 }
@@ -181,8 +181,22 @@ export default {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle
+              cx="12"
+              cy="12"
+              r="3"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           <span class="action-text">Read More</span>
         </button>

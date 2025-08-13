@@ -14,6 +14,7 @@ Route::post('/login', [AuthController::class, 'login']);
 // Public blog routes
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post}', [PostController::class, 'show']);
+Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 // Tags endpoints removed
 
@@ -31,7 +32,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts/{post}/unlike', [PostController::class, 'unlike']);
     
     // Comments routes
-    Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);

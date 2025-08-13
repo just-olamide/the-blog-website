@@ -4,30 +4,30 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     type: {
       type: String,
       default: 'success', // success, error, warning, info
-      validator: (value) => ['success', 'error', 'warning', 'info'].includes(value)
+      validator: (value) => ['success', 'error', 'warning', 'info'].includes(value),
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     message: {
       type: String,
-      required: true
+      required: true,
     },
     duration: {
       type: Number,
-      default: 5000
-    }
+      default: 5000,
+    },
   },
   data() {
     return {
       visible: false,
-      timer: null
+      timer: null,
     }
   },
   watch: {
@@ -37,7 +37,7 @@ export default {
       } else {
         this.hideToast()
       }
-    }
+    },
   },
   methods: {
     showToast() {
@@ -55,13 +55,13 @@ export default {
         this.timer = null
       }
       this.$emit('close')
-    }
+    },
   },
   beforeUnmount() {
     if (this.timer) {
       clearTimeout(this.timer)
     }
-  }
+  },
 }
 </script>
 
@@ -77,26 +77,66 @@ export default {
       <div :class="['toast-card', `toast-${type}`]">
         <div class="toast-icon">
           <!-- Success Icon -->
-          <svg v-if="type === 'success'" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            v-if="type === 'success'"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 6L9 17L4 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           <!-- Error Icon -->
-          <svg v-else-if="type === 'error'" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2"/>
-            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2"/>
+          <svg
+            v-else-if="type === 'error'"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" />
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" />
           </svg>
           <!-- Warning Icon -->
-          <svg v-else-if="type === 'warning'" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.29 3.86L1.82 18A2 2 0 003.68 21H20.32A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="17" r="1" fill="currentColor"/>
+          <svg
+            v-else-if="type === 'warning'"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.29 3.86L1.82 18A2 2 0 003.68 21H20.32A2 2 0 0022.18 18L13.71 3.86A2 2 0 0010.29 3.86Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2" />
+            <circle cx="12" cy="17" r="1" fill="currentColor" />
           </svg>
           <!-- Info Icon -->
-          <svg v-else-if="type === 'info'" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 16V12" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="8" r="1" fill="currentColor"/>
+          <svg
+            v-else-if="type === 'info'"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <path d="M12 16V12" stroke="currentColor" stroke-width="2" />
+            <circle cx="12" cy="8" r="1" fill="currentColor" />
           </svg>
         </div>
         <div class="toast-content">
@@ -104,9 +144,15 @@ export default {
           <p class="toast-message">{{ message }}</p>
         </div>
         <button @click="hideToast" class="toast-close">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
-            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
           </svg>
         </button>
       </div>
@@ -229,7 +275,7 @@ export default {
     left: 10px;
     max-width: none;
   }
-  
+
   .toast-card {
     min-width: unset;
   }

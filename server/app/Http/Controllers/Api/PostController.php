@@ -13,6 +13,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::with(['user', 'category'])
+            ->withCount('comments')
             ->when($request->category_id, function ($q) use ($request) {
                 return $q->where('category_id', $request->category_id);
             })
@@ -29,7 +30,26 @@ class PostController extends Controller
             $query->where('user_id', $request->user()->id);
         }
 
-        return $query->latest()->paginate(10);
+        $posts = $query->latest()->paginate(10);
+        
+        // Add like status for authenticated users
+        if ($request->user()) {
+            $likedPostIds = $request->user()->likedPosts()->pluck('posts.id')->toArray();
+            
+            $posts->getCollection()->transform(function ($post) use ($likedPostIds) {
+                $post->is_liked = in_array($post->id, $likedPostIds);
+                $post->likes_count = $post->like_count;
+                return $post;
+            });
+        } else {
+            $posts->getCollection()->transform(function ($post) {
+                $post->is_liked = false;
+                $post->likes_count = $post->like_count;
+                return $post;
+            });
+        }
+
+        return $posts;
     }
 
     public function store(Request $request)
@@ -64,7 +84,19 @@ class PostController extends Controller
 
         $post->increment('view_count');
         
-        return response()->json($post->load(['user', 'category']));
+        // Load relationships and add like status for authenticated users
+        $post->load(['user', 'category', 'comments.user']);
+        
+        if (request()->user()) {
+            $post->is_liked = $post->likedBy(request()->user());
+        } else {
+            $post->is_liked = false;
+        }
+        
+        $post->likes_count = $post->like_count;
+        $post->comments_count = $post->comments()->count();
+        
+        return response()->json($post);
     }
 
     public function update(Request $request, Post $post)
@@ -111,13 +143,54 @@ class PostController extends Controller
 
     public function like(Post $post)
     {
+        $user = request()->user();
+        
+        // Check if user already liked this post
+        $existingLike = $post->likes()->where('user_id', $user->id)->first();
+        
+        if ($existingLike) {
+            return response()->json([
+                'message' => 'Post already liked',
+                'likes' => $post->like_count,
+                'is_liked' => true
+            ], 400);
+        }
+        
+        // Create like record
+        $post->likes()->create(['user_id' => $user->id]);
+        
+        // Update like count
         $post->increment('like_count');
-        return response()->json(['likes' => $post->like_count]);
+        
+        return response()->json([
+            'likes' => $post->like_count,
+            'is_liked' => true
+        ]);
     }
 
     public function unlike(Post $post)
     {
+        $user = request()->user();
+        
+        // Find and delete the like record
+        $like = $post->likes()->where('user_id', $user->id)->first();
+        
+        if (!$like) {
+            return response()->json([
+                'message' => 'Post not liked',
+                'likes' => $post->like_count,
+                'is_liked' => false
+            ], 400);
+        }
+        
+        $like->delete();
+        
+        // Update like count
         $post->decrement('like_count');
-        return response()->json(['likes' => $post->like_count]);
+        
+        return response()->json([
+            'likes' => $post->like_count,
+            'is_liked' => false
+        ]);
     }
 }

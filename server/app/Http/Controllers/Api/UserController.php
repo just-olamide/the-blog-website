@@ -87,11 +87,14 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // Get liked post IDs for this user
+        $likedPostIds = $user->likes()->pluck('post_id')->toArray();
+
         // Transform the data to match frontend expectations
-        $posts->getCollection()->transform(function ($post) use ($user) {
+        $posts->getCollection()->transform(function ($post) use ($user, $likedPostIds) {
             $post->comments_count = $post->comments_count;
             $post->likes_count = $post->like_count;
-            $post->is_liked = false; // You can implement like tracking if needed
+            $post->is_liked = in_array($post->id, $likedPostIds);
             
             // Format featured image URL
             if ($post->featured_image) {

@@ -9,7 +9,7 @@ export default {
   name: 'PostForm',
   components: {
     Modal,
-    Toast
+    Toast,
   },
   props: {
     post: {
@@ -33,7 +33,7 @@ export default {
       imagePreview: null,
       showConfirmModal: false,
       showSuccessToast: false,
-      toastMessage: ''
+      toastMessage: '',
     }
   },
   computed: {
@@ -107,8 +107,8 @@ export default {
         })
 
         // Show success toast
-        this.toastMessage = this.isEdit 
-          ? 'Post updated successfully!' 
+        this.toastMessage = this.isEdit
+          ? 'Post updated successfully!'
           : `Post ${this.form.status === 'published' ? 'published' : 'saved as draft'} successfully!`
         this.showSuccessToast = true
 
@@ -121,7 +121,6 @@ export default {
             this.$router.push('/feeds')
           }
         }, 1500)
-
       } catch (error) {
         this.error = error.response?.data?.message || 'An error occurred while saving the post'
         console.error('Error submitting post:', error)
@@ -267,47 +266,67 @@ export default {
     </div>
 
     <!-- Confirmation Modal -->
-    <Modal 
-      :show="showConfirmModal" 
+    <Modal
+      :show="showConfirmModal"
       title="Confirm Post Submission"
       size="md"
       @close="cancelSubmission"
     >
       <div class="confirmation-content">
         <div class="confirmation-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 12L11 14L15 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
           </svg>
         </div>
         <h4 class="confirmation-title">
-          {{ isEdit ? 'Update Post?' : (form.status === 'published' ? 'Publish Post?' : 'Save Draft?') }}
+          {{
+            isEdit ? 'Update Post?' : form.status === 'published' ? 'Publish Post?' : 'Save Draft?'
+          }}
         </h4>
         <p class="confirmation-message">
           <template v-if="isEdit">
             Are you sure you want to update this post with your changes?
           </template>
           <template v-else-if="form.status === 'published'">
-            Your post "{{ form.title }}" will be published and visible to all users. Are you sure you want to continue?
+            Your post "{{ form.title }}" will be published and visible to all users. Are you sure
+            you want to continue?
           </template>
           <template v-else>
-            Your post "{{ form.title }}" will be saved as a draft. You can publish it later from your dashboard.
+            Your post "{{ form.title }}" will be saved as a draft. You can publish it later from
+            your dashboard.
           </template>
         </p>
       </div>
-      
+
       <template #footer>
-        <button 
-          type="button" 
-          class="btn btn-secondary" 
+        <button
+          type="button"
+          class="btn btn-secondary"
           @click="cancelSubmission"
           :disabled="loading"
         >
           Cancel
         </button>
-        <button 
-          type="button" 
-          class="btn btn-primary" 
+        <button
+          type="button"
+          class="btn btn-primary"
           @click="confirmSubmission"
           :disabled="loading"
         >
@@ -320,7 +339,7 @@ export default {
     </Modal>
 
     <!-- Success Toast -->
-    <Toast 
+    <Toast
       :show="showSuccessToast"
       type="success"
       title="Success!"

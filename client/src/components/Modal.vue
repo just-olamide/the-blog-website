@@ -4,21 +4,21 @@ export default {
   props: {
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     size: {
       type: String,
       default: 'md', // sm, md, lg, xl
-      validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value)
+      validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value),
     },
     closable: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   emits: ['close', 'backdrop-click'],
   methods: {
@@ -39,7 +39,7 @@ export default {
       if (event.key === 'Escape' && this.closable) {
         this.closeModal()
       }
-    }
+    },
   },
   mounted() {
     document.addEventListener('keydown', this.handleEscapeKey)
@@ -54,8 +54,8 @@ export default {
       } else {
         document.body.style.overflow = ''
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -83,9 +83,15 @@ export default {
                 type="button"
                 aria-label="Close modal"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
-                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" />
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" />
                 </svg>
               </button>
             </div>
@@ -224,33 +230,33 @@ export default {
   .modal-overlay {
     padding: 10px;
   }
-  
+
   .modal-container {
     max-width: 100%;
     margin: 0;
   }
-  
+
   .modal-header,
   .modal-body,
   .modal-footer {
     padding-left: 16px;
     padding-right: 16px;
   }
-  
+
   .modal-header {
     padding-top: 16px;
   }
-  
+
   .modal-body {
     padding-top: 16px;
     padding-bottom: 16px;
   }
-  
+
   .modal-footer {
     padding-bottom: 16px;
     flex-direction: column;
   }
-  
+
   .modal-footer button {
     width: 100%;
   }

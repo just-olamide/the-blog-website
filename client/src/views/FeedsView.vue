@@ -46,16 +46,29 @@ export default {
         this.loading = false
       }
     },
-    onLike(postId) {
-      this.posts = this.posts.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              is_liked: !p.is_liked,
-              likes_count: (p.likes_count || 0) + (p.is_liked ? -1 : 1),
-            }
-          : p,
-      )
+    async onLike(postId) {
+      try {
+        const post = this.posts.find((p) => p.id === postId)
+        if (!post) return
+
+        const postSlug = post.slug || post.id
+        const endpoint = post.is_liked ? 'unlike' : 'like'
+        const response = await axios.post(`/posts/${postSlug}/${endpoint}`)
+
+        // Update the post in the local state
+        this.posts = this.posts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                is_liked: response.data.is_liked,
+                likes_count: response.data.likes,
+              }
+            : p,
+        )
+      } catch (error) {
+        console.error('Error handling like:', error)
+        // Optionally show error message to user
+      }
     },
     onComment(postId) {
       console.log('Open comments for post', postId)
