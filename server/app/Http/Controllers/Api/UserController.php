@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Models\Post;
+use App\Models\Comment;
 
 class UserController extends Controller
 {
@@ -56,5 +58,22 @@ class UserController extends Controller
         ]);
 
         return response()->json(['message' => 'Password updated successfully']);
+    }
+
+    public function stats(Request $request)
+    {
+        $user = $request->user();
+
+        $postsCount = Post::where('user_id', $user->id)->count();
+        $totalLikes = Post::where('user_id', $user->id)->sum('like_count');
+        $totalComments = Comment::whereHas('post', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->count();
+
+        return response()->json([
+            'posts' => $postsCount,
+            'likes' => $totalLikes,
+            'comments' => $totalComments,
+        ]);
     }
 }
